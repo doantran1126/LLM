@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VeriFlow AI - Intelligent Customer Onboarding Platform</TrustID Intelligence>
+    <title>VeriFlow AI - Intelligent Customer Onboarding Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -30,7 +30,7 @@
 </head>
 <body class="min-h-screen flex flex-col">
     <!-- Navbar -->
-    <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+    <nav class="border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-md">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-indigo-500/30">V</div>
             <div>
@@ -48,9 +48,9 @@
     <!-- Main Container -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- Left Panel: Profile Selection, Image Upload & Metrics -->
+        <!-- Left Panel -->
         <div class="lg:col-span-8 space-y-6">
-            <!-- Top Metric Cards -->
+            <!-- Metric Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-card p-5">
                     <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Profiles Processed</p>
@@ -60,7 +60,7 @@
                 <div class="glass-card p-5">
                     <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Extraction Accuracy</p>
                     <h3 class="text-2xl font-bold text-sky-400">98.6%</h3>
-                    <p class="text-xs text-slate-400 mt-2">Baseline Model: GPT-4o Vision OCR</p>
+                    <p class="text-xs text-slate-400 mt-2">Baseline Model: Vision OCR</p>
                 </div>
                 <div class="glass-card p-5">
                     <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Auto-Approval Rate</p>
@@ -87,7 +87,6 @@
                     </select>
                 </div>
 
-                <!-- Image Upload & Viewer Area -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                     <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex flex-col justify-between space-y-3">
                         <div class="flex items-center justify-between">
@@ -98,7 +97,6 @@
                         <p class="text-[11px] text-slate-400 italic">Hệ thống AI Vision sẽ tự động trích xuất thông tin khi bạn tải ảnh lên.</p>
                     </div>
 
-                    <!-- Image Preview Box -->
                     <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden h-36">
                         <div id="image-placeholder" class="text-center space-y-1">
                             <i class="fa-solid fa-image text-slate-600 text-2xl"></i>
@@ -109,7 +107,7 @@
                 </div>
             </div>
 
-            <!-- Cross-Check & Field Extraction Table -->
+            <!-- Cross-Check Table -->
             <div class="glass-card p-6 space-y-4">
                 <div class="flex justify-between items-center">
                     <h4 class="font-semibold text-lg text-white"><i class="fa-solid fa-table-cells-row-lock text-indigo-400 mr-2"></i> Trích xuất & Đối chiếu dữ liệu (OCR vs Form)</h4>
@@ -126,14 +124,12 @@
                                 <th class="p-3">Match Status</th>
                             </tr>
                         </thead>
-                        <tbody id="crosscheck-tbody" class="divide-y divide-slate-800 text-xs">
-                            <!-- Dynamic populated by JS -->
-                        </tbody>
+                        <tbody id="crosscheck-tbody" class="divide-y divide-slate-800 text-xs"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Evaluation & Test Metrics Section -->
+            <!-- Metrics -->
             <div class="glass-card p-6">
                 <h4 class="font-semibold text-lg text-white mb-3"><i class="fa-solid fa-chart-line text-indigo-400 mr-2"></i> System Evaluation & Performance Metrics</h4>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -157,28 +153,22 @@
             </div>
         </div>
 
-        <!-- Right Panel: AI Summary, Risk Flags & Human-in-the-Loop Actions -->
+        <!-- Right Panel -->
         <div class="lg:col-span-4 flex flex-col space-y-6">
-            
-            <!-- KYC Summary & Risk Flags Card -->
             <div class="glass-card p-5 space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                     <span class="font-semibold text-sm text-white"><i class="fa-solid fa-shield-halved text-indigo-400 mr-1.5"></i> KYC AI Summary & Risks</span>
                     <span class="text-xs text-slate-400">Rule Engine + LLM</span>
                 </div>
-                <div id="kyc-summary-text" class="text-xs text-slate-300 space-y-2 leading-relaxed">
-                    <!-- Dynamic populated by JS -->
-                </div>
+                <div id="kyc-summary-text" class="text-xs text-slate-300 space-y-2 leading-relaxed"></div>
             </div>
 
-            <!-- Human-in-the-Loop Action Panel -->
             <div class="glass-card p-5 space-y-4 border border-indigo-500/30 bg-gradient-to-b from-indigo-950/20 to-slate-900/60">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                     <span class="font-semibold text-sm text-white"><i class="fa-solid fa-user-gear text-indigo-400 mr-1.5"></i> Human-in-the-Loop Review</span>
                     <span class="text-xs text-amber-400 font-medium">Auto / Optional</span>
                 </div>
                 <p class="text-xs text-slate-400">Nhân viên xét duyệt thực hiện thao tác xác thực cuối cùng:</p>
-                
                 <div class="space-y-2">
                     <button onclick="handleAction('accept')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/20">
                         <i class="fa-solid fa-check"></i> <span>Accept & Approve Profile</span>
@@ -193,7 +183,7 @@
                 <div id="action-feedback" class="text-xs text-center text-indigo-300 font-medium pt-1"></div>
             </div>
 
-            <!-- Interactive AI Chat Box -->
+            <!-- Chat Box -->
             <div class="flex-1 flex flex-col h-[300px] glass-card overflow-hidden border border-slate-800">
                 <div class="p-3 border-b border-slate-800 bg-slate-900/50 flex items-center justify-between">
                     <span class="font-semibold text-xs text-white">VeriFlow Assistant Bot</span>
@@ -216,11 +206,9 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <!-- Client Script for Profile Data & Interactivity -->
     <script>
         const FAKE_PROFILES = {
             "P001": { profile_id: "P001", full_name: "Nguyen Van An", dob: "1998-03-15", id_number: "001098012345", gender: "Male", address: "123 Nguyen Trai, District 1, HCMC", expiry_date: "2030-03-15", status: "Clean", riskClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/25" },
@@ -236,13 +224,19 @@
         };
 
         function switchProfile() {
-            const key = document.getElementById('profile-select').value;
-            const p = FAKE_PROFILES[key];
-            renderProfileData(p);
+            try {
+                const selectEl = document.getElementById('profile-select');
+                if (!selectEl) return;
+                const p = FAKE_PROFILES[selectEl.value];
+                if (p) renderProfileData(p);
+            } catch (err) {
+                console.error("Error switching profile:", err);
+            }
         }
 
         function renderProfileData(p) {
             const tbody = document.getElementById('crosscheck-tbody');
+            if (!tbody) return;
             let isMismatch = p.status === "Mismatch Warning";
             let nameForm = isMismatch ? p.full_name + " (Mismatched)" : p.full_name;
             let nameColor = isMismatch ? "text-rose-400" : "text-emerald-400";
@@ -258,16 +252,21 @@
             `;
 
             const badge = document.getElementById('risk-badge');
-            badge.className = `px-2.5 py-1 rounded-full text-xs font-semibold border ${p.riskClass}`;
-            badge.innerText = `Status: ${p.status}`;
+            if (badge) {
+                badge.className = `px-2.5 py-1 rounded-full text-xs font-semibold border ${p.riskClass}`;
+                badge.innerText = `Status: ${p.status}`;
+            }
 
             const summaryDiv = document.getElementById('kyc-summary-text');
-            summaryDiv.innerHTML = `
-                <p><strong>Profile ID:</strong> ${p.profile_id} - ${p.full_name}</p>
-                <p><strong>Status:</strong> <span class="${p.status === 'Clean' ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${p.status}</span></p>
-                <p><strong>Completeness Check:</strong> All required identity fields successfully extracted from document.</p>
-            `;
-            document.getElementById('action-feedback').innerText = '';
+            if (summaryDiv) {
+                summaryDiv.innerHTML = `
+                    <p><strong>Profile ID:</strong> ${p.profile_id} - ${p.full_name}</p>
+                    <p><strong>Status:</strong> <span class="${p.status === 'Clean' ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${p.status}</span></p>
+                    <p><strong>Completeness Check:</strong> All required identity fields successfully extracted from document.</p>
+                `;
+            }
+            const feedback = document.getElementById('action-feedback');
+            if (feedback) feedback.innerText = '';
         }
 
         function handleImageUpload(event) {
@@ -278,24 +277,31 @@
             reader.onload = function(e) {
                 const previewImg = document.getElementById('uploaded-image-preview');
                 const placeholder = document.getElementById('image-placeholder');
-                previewImg.src = e.target.result;
-                previewImg.classList.remove('hidden');
-                placeholder.classList.add('hidden');
+                if (previewImg && placeholder) {
+                    previewImg.src = e.target.result;
+                    previewImg.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                }
             }
             reader.readAsDataURL(file);
 
             const keys = Object.keys(FAKE_PROFILES);
             const randomKey = keys[Math.floor(Math.random() * keys.length)];
-            document.getElementById('profile-select').value = randomKey;
+            const selectEl = document.getElementById('profile-select');
+            if (selectEl) selectEl.value = randomKey;
             
             const p = FAKE_PROFILES[randomKey];
-            renderProfileData(p);
+            if (p) renderProfileData(p);
 
-            document.getElementById('action-feedback').innerHTML = `<span class="text-indigo-400"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Vision đã trích xuất thành công hồ sơ cho: ${p.full_name} (${p.profile_id})!</span>`;
+            const feedback = document.getElementById('action-feedback');
+            if (feedback) {
+                feedback.innerHTML = `<span class="text-indigo-400"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Vision đã trích xuất thành công hồ sơ cho: ${p.full_name} (${p.profile_id})!</span>`;
+            }
         }
 
         function handleAction(actionType) {
             const feedback = document.getElementById('action-feedback');
+            if (!feedback) return;
             if(actionType === 'accept') {
                 feedback.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-check-circle"></i> Đã phê duyệt hồ sơ thành công! Đã gửi thông báo cho khách hàng.</span>';
             } else if(actionType === 'request_info') {
@@ -308,7 +314,7 @@
         function sendMessage() {
             const input = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
-            if (!input.value.trim()) return;
+            if (!input || !chatBox || !input.value.trim()) return;
 
             const userMsg = document.createElement('div');
             userMsg.className = 'flex items-start justify-end space-x-2';
