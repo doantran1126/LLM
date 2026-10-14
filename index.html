@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA KYC - Intelligent Customer Onboarding Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0b0f19',
+                        cardbg: '#1e293b',
+                        bordercolor: '#334155',
+                        primary: '#6366f1',
+                        accent: '#38bdf8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0b0f19; color: #f8fafc; font-family: 'Inter', system-ui, sans-serif; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1rem; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-indigo-500/30">K</div>
+            <div>
+                <span class="font-bold text-lg tracking-wide text-white">AURA KYC</span>
+                <span class="text-xs text-indigo-400 block -mt-1">Intelligent Customer Onboarding (Project 05)</span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse"></i> Document AI Active[cite: 2]
+            </span>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Panel: Profile Selection & Metrics -->
+        <div class="lg:col-span-8 space-y-6">
+            <!-- Top Metric Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-card p-5">
+                    <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Profiles Processed</p>
+                    <h3 class="text-2xl font-bold text-white">5 / 5 Target</h3>
+                    <p class="text-xs text-emerald-400 mt-2 font-medium"><i class="fa-solid fa-check-circle"></i> 100% Batch Complete</p>
+                </div>
+                <div class="glass-card p-5">
+                    <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Extraction Accuracy</p>
+                    <h3 class="text-2xl font-bold text-sky-400">98.4%</h3>
+                    <p class="text-xs text-slate-400 mt-2">Baseline Model: GPT-4o Vision</p>
+                </div>
+                <div class="glass-card p-5">
+                    <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Auto-Approval Rate</p>
+                    <h3 class="text-2xl font-bold text-emerald-400">60.0%</h3>
+                    <p class="text-xs text-slate-400 mt-2">40% routed to Human-in-Loop</p>
+                </div>
+            </div>
+
+            <!-- Profile Selector & Multi-Document Viewer -->
+            <div class="glass-card p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h4 class="font-semibold text-lg text-white"><i class="fa-solid fa-folder-open text-indigo-400 mr-2"></i> Active KYC Profile Review</h4>
+                    <select id="profile-select" onchange="switchProfile()" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-sm text-white focus:outline-none">
+                        <option value="1">Profile #101: Nguyễn Văn An (Match - Auto Approve)</option>
+                        <option value="2">Profile #102: Trần Thị Bình (Mismatch Detected)</option>
+                        <option value="3">Profile #103: Lê Hoàng Nam (Missing Document)</option>
+                        <option value="4">Profile #104: Phạm Minh Tuấn (Low Confidence Score)</option>
+                        <option value="5">Profile #105: Hoàng Thu Trang (Valid - Clean)</option>
+                    </select>
+                </div>
+
+                <!-- 3 Required Document Types Display -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-id-card text-indigo-400 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-semibold text-white">CCCD / Passport</p>
+                                <p class="text-[10px] text-emerald-400" id="doc1-status">Verified (99.2%)</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">PDF/Img</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-file-contract text-sky-400 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-semibold text-white">KYC Application Form</p>
+                                <p class="text-[10px] text-emerald-400" id="doc2-status">Extracted</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Form</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-receipt text-amber-400 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-semibold text-white">Proof of Address</p>
+                                <p class="text-[10px] text-emerald-400" id="doc3-status">Utility Bill</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Scan</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cross-Check & Field Extraction Table -->
+            <div class="glass-card p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-semibold text-lg text-white"><i class="fa-solid fa-table-cells-row-lock text-indigo-400 mr-2"></i> Cross-Check 5 Key Fields & Mismatch Detection</h4>
+                    <span id="risk-badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Status: Clean</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-900/80 text-xs uppercase text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Field Name</th>
+                                <th class="p-3">CCCD Data</th>
+                                <th class="p-3">KYC Form Data</th>
+                                <th class="p-3">Confidence</th>
+                                <th class="p-3">Match Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="crosscheck-tbody" class="divide-y divide-slate-800 text-xs">
+                            <tr>
+                                <td class="p-3 font-medium text-white">Full Name</td>
+                                <td class="p-3">Nguyễn Văn An</td>
+                                <td class="p-3">Nguyễn Văn An</td>
+                                <td class="p-3 text-emerald-400">99.8%</td>
+                                <td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-white">ID Number</td>
+                                <td class="p-3">038092001234</td>
+                                <td class="p-3">038092001234</td>
+                                <td class="p-3 text-emerald-400">99.9%</td>
+                                <td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-white">Date of Birth</td>
+                                <td class="p-3">15/08/1992</td>
+                                <td class="p-3">15/08/1992</td>
+                                <td class="p-3 text-emerald-400">99.5%</td>
+                                <td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-white">Residential Address</td>
+                                <td class="p-3">Quận 1, TP.HCM</td>
+                                <td class="p-3">Quận 1, TP.HCM</td>
+                                <td class="p-3 text-emerald-400">96.4%</td>
+                                <td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-white">Phone Number</td>
+                                <td class="p-3">N/A (Form only)</td>
+                                <td class="p-3">0903123456</td>
+                                <td class="p-3 text-sky-400">98.1%</td>
+                                <td class="p-3"><span class="text-sky-400"><i class="fa-solid fa-circle-info mr-1"></i> Single Source</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Evaluation & Test Metrics Section -->
+            <div class="glass-card p-6">
+                <h4 class="font-semibold text-lg text-white mb-3"><i class="fa-solid fa-chart-line text-indigo-400 mr-2"></i> System Evaluation & Performance Metrics</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400">Accuracy (Extraction)</p>
+                        <p class="text-xl font-bold text-emerald-400 mt-1">98.4%</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400">Completeness Check</p>
+                        <p class="text-xl font-bold text-sky-400 mt-1">99.1%</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400">Groundedness Rate</p>
+                        <p class="text-xl font-bold text-indigo-400 mt-1">97.8%</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400">Avg Processing Time</p>
+                        <p class="text-xl font-bold text-amber-400 mt-1">1.8s</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: AI Summary, Risk Flags & Human-in-the-Loop Actions -->
+        <div class="lg:col-span-4 flex flex-col space-y-6">
+            
+            <!-- KYC Summary & Risk Flags Card -->
+            <div class="glass-card p-5 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <span class="font-semibold text-sm text-white"><i class="fa-solid fa-shield-halved text-indigo-400 mr-1.5"></i> KYC AI Summary & Risks</span>
+                    <span class="text-xs text-slate-400">Rule Engine + LLM</span>
+                </div>
+                <div id="kyc-summary-text" class="text-xs text-slate-300 space-y-2 leading-relaxed">
+                    <p><strong>Profile Status:</strong> <span class="text-emerald-400 font-semibold">Ready for Auto-Approval</span>[cite: 2]</p>
+                    <p><strong>Completeness Check:</strong> All 3 required documents present. No missing mandatory fields[cite: 2].</p>
+                    <p><strong>Risk Flags:</strong> Low risk profile. Address verified via utility bill match. No PEP/Sanction list hits.</p>
+                </div>
+            </div>
+
+            <!-- Human-in-the-Loop Action Panel -->
+            <div class="glass-card p-5 space-y-4 border border-indigo-500/30 bg-gradient-to-b from-indigo-950/20 to-slate-900/60">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <span class="font-semibold text-sm text-white"><i class="fa-solid fa-user-gear text-indigo-400 mr-1.5"></i> Human-in-the-Loop Review</span>[cite: 1, 2]
+                    <span class="text-xs text-amber-400 font-medium" id="hitl-mode">Auto / Optional</span>
+                </div>
+                <p class="text-xs text-slate-400">Staff review required only for low-confidence or mismatched fields[cite: 2]. Choose action below:</p>
+                
+                <div class="space-y-2">
+                    <button onclick="handleAction('accept')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/20">
+                        <i class="fa-solid fa-check"></i> <span>Accept & Approve Profile</span>[cite: 2]
+                    </button>
+                    <button onclick="handleAction('request_info')" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition shadow-lg shadow-amber-600/20">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <span>Request More Information</span>[cite: 2]
+                    </button>
+                    <button onclick="handleAction('manual_review')" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition">
+                        <i class="fa-solid fa-user-pen"></i> <span>Flag for Manual Review</span>[cite: 2]
+                    </button>
+                </div>
+                <div id="action-feedback" class="text-xs text-center text-indigo-300 font-medium pt-1"></div>
+            </div>
+
+            <!-- Interactive AI Chat Box -->
+            <div class="flex-1 flex flex-col h-[320px] glass-card overflow-hidden border border-slate-800">
+                <div class="p-3 border-b border-slate-800 bg-slate-900/50 flex items-center justify-between">
+                    <span class="font-semibold text-xs text-white">KYC Assistant Bot</span>
+                    <span class="text-[10px] text-slate-400">Gemini 3.5 Flash</span>
+                </div>
+                <div id="chat-box" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
+                    <div class="flex items-start space-x-2">
+                        <div class="w-6 h-6 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-[10px] font-bold text-indigo-400">AI</div>
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl rounded-tl-none border border-slate-700/50 text-slate-200">
+                            Xin chào! Tôi đã hoàn tất trích xuất hồ sơ KYC này[cite: 2]. Bạn cần kiểm tra sai lệch hay tra cứu lịch sử gì không?
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 border-t border-slate-800 bg-slate-900/50">
+                    <div class="flex items-center space-x-2">
+                        <input id="user-input" type="text" placeholder="Hỏi AI về hồ sơ..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
+                        <button onclick="sendMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Client Script for Profile Switching and Interactivity -->
+    <script>
+        const profilesData = {
+            "1": {
+                name: "Nguyễn Văn An",
+                risk: "Clean",
+                riskClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+                doc1: "Verified (99.2%)",
+                doc2: "Extracted",
+                doc3: "Utility Bill",
+                table: `
+                    <tr><td class="p-3 font-medium text-white">Full Name</td><td class="p-3">Nguyễn Văn An</td><td class="p-3">Nguyễn Văn An</td><td class="p-3 text-emerald-400">99.8%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">ID Number</td><td class="p-3">038092001234</td><td class="p-3">038092001234</td><td class="p-3 text-emerald-400">99.9%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Date of Birth</td><td class="p-3">15/08/1992</td><td class="p-3">15/08/1992</td><td class="p-3 text-emerald-400">99.5%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Address</td><td class="p-3">Quận 1, TP.HCM</td><td class="p-3">Quận 1, TP.HCM</td><td class="p-3 text-emerald-400">96.4%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Phone</td><td class="p-3">N/A</td><td class="p-3">0903123456</td><td class="p-3 text-sky-400">98.1%</td><td class="p-3"><span class="text-sky-400"><i class="fa-solid fa-circle-info mr-1"></i> Single</span></td></tr>
+                `,
+                summary: `<p><strong>Profile Status:</strong> <span class="text-emerald-400 font-semibold">Ready for Auto-Approval</span>[cite: 2]</p><p><strong>Completeness Check:</strong> All 3 mandatory documents present. Fully consistent[cite: 2].</p><p><strong>Risk Flags:</strong> No anomalies detected.</p>`
+            },
+            "2": {
+                name: "Trần Thị Bình",
+                risk: "Mismatch Warning",
+                riskClass: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+                doc1: "Verified (94.1%)",
+                doc2: "Extracted",
+                doc3: "Utility Bill",
+                table: `
+                    <tr><td class="p-3 font-medium text-white">Full Name</td><td class="p-3">Trần Thị Bình</td><td class="p-3">Trần Thị Bích</td><td class="p-3 text-rose-400">82.1%</td><td class="p-3"><span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Mismatch</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">ID Number</td><td class="p-3">038095004567</td><td class="p-3">038095004567</td><td class="p-3 text-emerald-400">99.9%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Date of Birth</td><td class="p-3">22/11/1995</td><td class="p-3">22/11/1995</td><td class="p-3 text-emerald-400">99.5%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Address</td><td class="p-3">Thủ Đức, TP.HCM</td><td class="p-3">Bình Thạnh, TP.HCM</td><td class="p-3 text-rose-400">74.2%</td><td class="p-3"><span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Mismatch</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Phone</td><td class="p-3">N/A</td><td class="p-3">0988776655</td><td class="p-3 text-sky-400">97.0%</td><td class="p-3"><span class="text-sky-400"><i class="fa-solid fa-circle-info mr-1"></i> Single</span></td></tr>
+                `,
+                summary: `<p><strong>Profile Status:</strong> <span class="text-rose-400 font-semibold">Requires Manual Review</span>[cite: 2]</p><p><strong>Mismatch Alert:</strong> Name mismatch between CCCD ("Bình") and Form ("Bích"). Address differs from Proof of Address bill[cite: 2].</p>`
+            },
+            "3": {
+                name: "Lê Hoàng Nam",
+                risk: "Missing Document",
+                riskClass: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+                doc1: "Verified (99.0%)",
+                doc2: "Extracted",
+                doc3: "Missing / Invalid",
+                table: `
+                    <tr><td class="p-3 font-medium text-white">Full Name</td><td class="p-3">Lê Hoàng Nam</td><td class="p-3">Lê Hoàng Nam</td><td class="p-3 text-emerald-400">99.8%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">ID Number</td><td class="p-3">038091009988</td><td class="p-3">038091009988</td><td class="p-3 text-emerald-400">99.9%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Date of Birth</td><td class="p-3">05/03/1988</td><td class="p-3">05/03/1988</td><td class="p-3 text-emerald-400">99.5%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Address</td><td class="p-3">Hai Bà Trưng, HN</td><td class="p-3">Hai Bà Trưng, HN</td><td class="p-3 text-emerald-400">95.0%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Proof of Address</td><td class="p-3 text-amber-400">Not Uploaded</td><td class="p-3 text-amber-400">Missing</td><td class="p-3 text-rose-400">0%</td><td class="p-3"><span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Missing Doc</span></td></tr>
+                `,
+                summary: `<p><strong>Profile Status:</strong> <span class="text-amber-400 font-semibold">Request More Information</span>[cite: 2]</p><p><strong>Completeness Warning:</strong> Proof of Address document is missing. System generated automatic request ticket[cite: 2].</p>`
+            },
+            "4": {
+                name: "Phạm Minh Tuấn",
+                risk: "Low Confidence",
+                riskClass: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+                doc1: "Blurry Scan (71.2%)",
+                doc2: "Extracted",
+                doc3: "Utility Bill",
+                table: `
+                    <tr><td class="p-3 font-medium text-white">Full Name</td><td class="p-3">Phạm Minh Tuấn</td><td class="p-3">Phạm Minh Tuấn</td><td class="p-3 text-amber-400">74.5%</td><td class="p-3"><span class="text-amber-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Low Conf</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">ID Number</td><td class="p-3">038088001122</td><td class="p-3">038088001122</td><td class="p-3 text-amber-400">78.0%</td><td class="p-3"><span class="text-amber-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Low Conf</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Date of Birth</td><td class="p-3">10/12/1985</td><td class="p-3">10/12/1985</td><td class="p-3 text-emerald-400">92.0%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Address</td><td class="p-3">Đống Đa, Hà Nội</td><td class="p-3">Đống Đa, Hà Nội</td><td class="p-3 text-emerald-400">95.0%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Phone</td><td class="p-3">N/A</td><td class="p-3">0912345678</td><td class="p-3 text-emerald-400">99.0%</td><td class="p-3"><span class="text-sky-400"><i class="fa-solid fa-circle-info mr-1"></i> Single</span></td></tr>
+                `,
+                summary: `<p><strong>Profile Status:</strong> <span class="text-sky-400 font-semibold">Human Review (Low Confidence)</span>[cite: 2]</p><p><strong>Confidence Notice:</strong> CCCD image quality is blurry. OCR confidence score below threshold (80%). Staff verification needed[cite: 2].</p>`
+            },
+            "5": {
+                name: "Hoàng Thu Trang",
+                risk: "Clean",
+                riskClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+                doc1: "Verified (99.8%)",
+                doc2: "Extracted",
+                doc3: "Utility Bill",
+                table: `
+                    <tr><td class="p-3 font-medium text-white">Full Name</td><td class="p-3">Hoàng Thu Trang</td><td class="p-3">Hoàng Thu Trang</td><td class="p-3 text-emerald-400">99.9%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">ID Number</td><td class="p-3">038094005566</td><td class="p-3">038094005566</td><td class="p-3 text-emerald-400">99.9%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Date of Birth</td><td class="p-3">02/06/1994</td><td class="p-3">02/06/1994</td><td class="p-3 text-emerald-400">99.8%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Address</td><td class="p-3">Hải Châu, Đà Nẵng</td><td class="p-3">Hải Châu, Đà Nẵng</td><td class="p-3 text-emerald-400">98.5%</td><td class="p-3"><span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i> Match</span></td></tr>
+                    <tr><td class="p-3 font-medium text-white">Phone</td><td class="p-3">N/A</td><td class="p-3">0935111222</td><td class="p-3 text-emerald-400">99.5%</td><td class="p-3"><span class="text-sky-400"><i class="fa-solid fa-circle-info mr-1"></i> Single</span></td></tr>
+                `,
+                summary: `<p><strong>Profile Status:</strong> <span class="text-emerald-400 font-semibold">Ready for Auto-Approval</span>[cite: 2]</p><p><strong>Completeness Check:</strong> All documents valid. Cross-check 100% passed[cite: 2].</p>`
+            }
+        };
+
+        function switchProfile() {
+            const val = document.getElementById('profile-select').value;
+            const data = profilesData[val];
+            document.getElementById('crosscheck-tbody').innerHTML = data.table;
+            document.getElementById('kyc-summary-text').innerHTML = data.summary;
+            document.getElementById('doc1-status').innerText = data.doc1;
+            
+            const badge = document.getElementById('risk-badge');
+            badge.className = `px-2.5 py-1 rounded-full text-xs font-semibold border ${data.riskClass}`;
+            badge.innerText = `Status: ${data.risk}`;
+            
+            document.getElementById('action-feedback').innerText = '';
+        }
+
+        function handleAction(actionType) {
+            const feedback = document.getElementById('action-feedback');
+            if(actionType === 'accept') {
+                feedback.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-check-circle"></i> Đã phê duyệt hồ sơ thành công! Đã gửi thông báo cho khách hàng[cite: 2].</span>';
+            } else if(actionType === 'request_info') {
+                feedback.innerHTML = '<span class="text-amber-400"><i class="fa-solid fa-envelope"></i> Đã gửi yêu cầu bổ sung thông tin/tài liệu cho khách hàng[cite: 2].</span>';
+            } else {
+                feedback.innerHTML = '<span class="text-indigo-400"><i class="fa-solid fa-user-gear"></i> Đã chuyển hồ sơ sang bộ phận Manual Review[cite: 2].</span>';
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            if (!input.value.trim()) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'flex items-start justify-end space-x-2';
+            userMsg.innerHTML = `<div class="bg-indigo-600 p-2.5 rounded-xl rounded-tr-none text-white">${input.value}</div>`;
+            chatBox.appendChild(userMsg);
+
+            const userText = input.value;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'flex items-start space-x-2';
+                aiMsg.innerHTML = `
+                    <div class="w-6 h-6 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-[10px] font-bold text-indigo-400">AI</div>
+                    <div class="bg-slate-800/80 p-2.5 rounded-xl rounded-tl-none border border-slate-700/50 text-slate-200">
+                        Hệ thống đã phân tích câu hỏi về "${userText}": Dữ liệu hồ sơ hiện tại hoàn toàn khớp với đối chiếu rule engine.
+                    </div>
+                `;
+                chatBox.appendChild(aiMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
